@@ -1,0 +1,5 @@
+# Ignorar credenciales de base de datos
+api.php
+
+# Ignorar archivos temporales
+.DS_Store

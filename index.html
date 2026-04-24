@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎉 Tarjeta 15 Premium</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Great+Vibes&family=Playfair+Display:ital,wght@0,900;1,900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- 🌌 Fondo Dinámico -->
+    <div id="bgSlideshow" class="bg-slideshow"></div>
+
+    <!-- 🎨 Panel Admin (OCULTO) -->
+    <div id="adminPanel" class="admin-panel">
+        <div class="admin-header">
+            <h2>🎨 Editor Premium 15</h2>
+            <span class="admin-badge">admin123</span>
+            <button id="toggleAdmin" class="btn-close">✕</button>
+        </div>
+        
+        <div class="admin-section" data-icon="🖼️">
+            <h3>Fotos</h3>
+            <input type="file" id="imageUpload" accept="image/*" multiple>
+            <div id="imageGallery"></div>
+        </div>
+
+        <div class="admin-section" data-icon="🌌">
+            <h3>Fondo Animado (Slideshow)</h3>
+            <input type="file" id="bgUpload" accept="image/*" multiple>
+            <div id="bgGallery" class="mini-gallery"></div>
+        </div>
+
+        <div class="admin-section" data-icon="🎵">
+            <h3>Música</h3>
+            <input type="file" id="musicUpload" accept="audio/*">
+            <div style="margin-top:10px;">
+                <label style="font-size:12px; color:#666;">Volumen</label>
+                <input type="range" id="musicVolume" min="0" max="1" step="0.1" value="0.5">
+            </div>
+            <div id="musicList"></div>
+        </div>
+
+        <div class="admin-section" data-icon="🎨">
+            <h3>Colores</h3>
+            <div class="color-pickers">
+                <label>Fondo <input type="color" id="bgColor" value="#ff6b9d"></label>
+                <label>Texto <input type="color" id="textColor" value="#ffffff"></label>
+                <label>Detalles <input type="color" id="accentColor" value="#ffd93d"></label>
+            </div>
+        </div>
+
+        <div class="admin-section" data-icon="✍️">
+            <h3>Tipografía</h3>
+            <select id="fontSelect">
+                <option value="'Poppins', sans-serif">Poppins (Moderno)</option>
+                <option value="'Dancing Script', cursive">Dancing Script (Elegante)</option>
+                <option value="'Great Vibes', cursive">Great Vibes (Clásico)</option>
+                <option value="'Playfair Display', serif">Playfair (Premium)</option>
+            </select>
+        </div>
+
+        <div class="admin-section" data-icon="✨">
+            <h3>Plantillas</h3>
+            <select id="templateSelect">
+                <option value="quince">💃 Tradicional 15</option>
+                <option value="glam">🌟 Glam Rosa Oro</option>
+                <option value="modern">⚡ Moderno</option>
+                <option value="elegant">💎 Elegante</option>
+            </select>
+            <div style="margin-top:15px; display:grid; gap:10px;">
+                <label style="font-size:12px;">Transparencia (Efecto Cristal)</label>
+                <input type="range" id="cardOpacity" min="0.3" max="1" step="0.05" value="1">
+                
+                <label style="font-size:12px;">Intensidad de Sombra</label>
+                <input type="range" id="shadowIntensity" min="0" max="1" step="0.1" value="0.5">
+            </div>
+            <div style="margin-top:15px; display:flex; flex-direction:column; gap:10px;">
+                <label><input type="checkbox" id="particles"> ✨ Partículas animadas</label>
+                <label><input type="checkbox" id="glitter"> 💎 Efecto brillo</label>
+            </div>
+        </div>
+
+        <div class="admin-section" data-icon="🎈">
+            <h3>Decoraciones Individuales</h3>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; font-size:12px;">
+                <div>Sup. Izq: <input type="file" id="upTL" accept="image/*"></div>
+                <div>Sup. Der: <input type="file" id="upTR" accept="image/*"></div>
+                <div>Medio Izq: <input type="file" id="upML" accept="image/*"></div>
+                <div>Medio Der: <input type="file" id="upMR" accept="image/*"></div>
+                <div>Inf. Izq: <input type="file" id="upBL" accept="image/*"></div>
+                <div>Inf. Der: <input type="file" id="upBR" accept="image/*"></div>
+            </div>
+        </div>
+
+        <div class="admin-section" data-icon="✏️">
+            <h3>Texto Personalizado</h3>
+            <input type="text" id="customName" placeholder="Nombre (ej: María)" maxlength="25">
+            <input type="text" id="customAge" placeholder="15" maxlength="2" style="width:80px; display:inline-block;">
+            <textarea id="customMessage" placeholder="Mensaje especial..." rows="4" maxlength="250"></textarea>
+            <input type="text" id="customFooter" placeholder="Texto del pie (Hecho con amor...)" maxlength="40" style="margin-top:10px;">
+        </div>
+
+        <div class="admin-section" data-icon="📅">
+            <h3>Detalles del Evento</h3>
+            <input type="text" id="eventDate" placeholder="Sábado 15 de Octubre - 21:00hs">
+            <input type="text" id="eventAddress" placeholder="Calle Falsa 123, Salón de Eventos">
+            <input type="text" id="eventMap" placeholder="URL de Google Maps (Iframe/Link)">
+            <input type="text" id="eventWhatsapp" placeholder="Número de WhatsApp (ej: 54911...)">
+        </div>
+
+        <button id="generateConfig" class="admin-save-btn">💾 Generar Configuración Permanente</button>
+    </div>
+
+    <!-- 🎂 Tarjeta Principal -->
+    <div id="cardContainer" class="card-container">
+        <div id="birthdayCard" class="birthday-card">
+            <!-- El contenido se genera por JS -->
+        </div>
+
+        <!-- 📍 Detalles del Evento -->
+        <div id="detailsSection" class="memories-section" style="margin-bottom: 40px;">
+            <h2 class="section-title">¿Cuándo y Dónde?</h2>
+            <div class="event-info-container">
+                <div class="info-box">
+                    <span class="icon">📅</span>
+                    <p id="displayDate">Cargando fecha...</p>
+                </div>
+                <div class="info-box">
+                    <span class="icon">📍</span>
+                    <p id="displayAddress">Cargando dirección...</p>
+                </div>
+            </div>
+            <div id="mapContainer" class="map-container">
+                <!-- Iframe de mapa -->
+            </div>
+            <a id="rsvpBtn" href="#" target="_blank" class="rsvp-button">Confirmar Asistencia 📱</a>
+        </div>
+
+        <!-- 📸 Sección de Recuerdos (Landing Page) -->
+        <div id="memoriesSection" class="memories-section">
+            <h2 class="section-title">Nuestros Recuerdos</h2>
+            <div id="memoriesGrid" class="memories-grid">
+                <!-- Aquí se cargan las fotos de la galería automáticamente -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 🔧 Botón Admin DISCRETO -->
+    <button id="adminBtn" class="admin-btn">⚙️</button>
+
+    <!-- 🎶 Audio -->
+    <audio id="bgMusic" loop preload="auto"></audio>
+
+    <script src="script.js"></script>
+</body>
+</html>
