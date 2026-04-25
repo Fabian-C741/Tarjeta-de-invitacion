@@ -1,7 +1,10 @@
 class PremiumCardEditor {
     constructor() {
-        // URL actualizada a tu dominio de Hostinger
-        this.apiUrl = 'https://marialuz-15-invitacion.kcrsf.com/api.php';
+        // Detectar si estamos en Netlify para ajustar la API
+        this.isNetlify = window.location.hostname.includes('netlify.app');
+        // REEMPLAZA ESTA URL con la dirección real de tu archivo api.php en Hostinger
+        this.apiUrl = 'https://marialuz-15-invitacion.kcrsf.com/api.php'; 
+
         this.images = [];
         this.bgImages = [];
         this.currentBgIndex = 0;
@@ -9,11 +12,22 @@ class PremiumCardEditor {
         this.decorations = []; // Ahora es un array para libertad total
         this.dynamicSections = []; // Secciones de scroll infinito
         this.palettes = [
-            { bg: '#ff6b9d', text: '#ffffff', accent: '#ffd93d' },
-            { bg: '#1a1a1a', text: '#ffffff', accent: '#00d4ff' },
-            { bg: '#ffffff', text: '#1a1a1a', accent: '#ff6b9d' },
-            { bg: '#6c5ce7', text: '#ffffff', accent: '#a29bfe' },
-            { bg: '#f1c40f', text: '#1a1a1a', accent: '#e67e22' }
+            { bg: '#ff6b9d', text: '#ffffff', accent: '#ffd93d' }, // Rose & Gold
+            { bg: '#1a1a1a', text: '#ffffff', accent: '#00d4ff' }, // Dark Cyber
+            { bg: '#ffffff', text: '#1a1a1a', accent: '#ff6b9d' }, // Clean White
+            { bg: '#6c5ce7', text: '#ffffff', accent: '#a29bfe' }, // Purple Royal
+            { bg: '#f1c40f', text: '#1a1a1a', accent: '#e67e22' }, // Sun Gold
+            { bg: '#0f172a', text: '#ffffff', accent: '#fbbf24' }, // Navy & Amber
+            { bg: '#e5b3a3', text: '#ffffff', accent: '#f7e7ce' }, // Rose Gold Silk
+            { bg: '#064e3b', text: '#ffffff', accent: '#34d399' }, // Emerald Luxury
+            { bg: '#ff7f50', text: '#ffffff', accent: '#ffe4b5' }, // Peach Fizz
+            { bg: '#111827', text: '#ffffff', accent: '#f43f5e' }, // Midnight Ruby
+            { bg: '#faf5ff', text: '#581c87', accent: '#d8b4fe' }, // Lavender Mist
+            { bg: '#ecfdf5', text: '#064e3b', accent: '#10b981' }, // Mint Garden
+            { bg: '#312e81', text: '#ffffff', accent: '#818cf8' }, // Indigo Night
+            { bg: '#fff7ed', text: '#7c2d12', accent: '#fb923c' }, // Warm Orange
+            { bg: '#1e1b4b', text: '#ffffff', accent: '#e879f9' }, // Galactic Pink
+            { bg: '#fdf2f8', text: '#831843', accent: '#f472b6' }  // Strawberry Cream
         ];
         this.particlesEnabled = false;
         this.glitterEnabled = false;
@@ -193,7 +207,10 @@ class PremiumCardEditor {
     renderPalettes() {
         const container = document.getElementById('paletteContainer');
         container.innerHTML = this.palettes.map((p, i) => `
-            <div class="palette-item" style="background: ${p.bg};" onclick="window.editor.applyPalette(${i})"></div>
+            <div class="palette-item" 
+                 style="background: linear-gradient(45deg, ${p.bg} 33%, ${p.accent} 33% 66%, ${p.text} 66%);" 
+                 onclick="window.editor.applyPalette(${i})"
+                 title="Fondo, Acento y Texto"></div>
         `).join('');
     }
 
@@ -202,6 +219,53 @@ class PremiumCardEditor {
         document.getElementById('bgColor').value = p.bg;
         document.getElementById('textColor').value = p.text;
         document.getElementById('accentColor').value = p.accent;
+        this.updateCard();
+    }
+
+    addDynamicSection(type) {
+        const id = Date.now();
+        let content = '';
+        let title = '';
+        
+        if (type === 'text') { title = 'Nuestra Historia'; content = 'Escribe aquí tu mensaje...'; }
+        if (type === 'gift') { title = 'Regalos'; content = 'Alias: tu.alias.aqui\nCBU: 000000...'; }
+        if (type === 'memories') { title = 'Galería de Recuerdos'; content = ''; }
+        if (type === 'image') { title = ''; content = ''; }
+
+        this.dynamicSections.push({ id, type, title, content });
+        this.renderDynamicSectionsManager();
+        this.updateCard();
+    }
+
+    renderDynamicSectionsManager() {
+        const container = document.getElementById('dynamicSectionsManager');
+        if (!container) return;
+        
+        container.innerHTML = this.dynamicSections.map((s, i) => `
+            <div class="decor-control-item" style="border-left: 4px solid var(--accent-color); margin-bottom:10px; background:#f9f9f9; padding:10px; border-radius:8px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
+                    <span style="font-size:11px; font-weight:bold; color:#666;">BLOQUE: ${s.type.toUpperCase()}</span>
+                    <button onclick="window.editor.removeDynamicSection(${i})" style="border:none; background:none; cursor:pointer; font-size:14px;">🗑️</button>
+                </div>
+                <input type="text" value="${s.title}" placeholder="Título de sección" 
+                       oninput="window.editor.updateDynamicSection(${i}, 'title', this.value)" 
+                       style="padding:5px 10px; margin-bottom:5px; font-size:13px; border-radius:8px;">
+                ${s.type !== 'memories' && s.type !== 'image' ? `
+                    <textarea oninput="window.editor.updateDynamicSection(${i}, 'content', this.value)" 
+                              style="padding:5px 10px; font-size:13px; height:60px; border-radius:8px;">${s.content}</textarea>
+                ` : '<p style="font-size:10px; color:#888;">(Este bloque usa las fotos cargadas en Media)</p>'}
+            </div>
+        `).join('');
+    }
+
+    updateDynamicSection(index, prop, value) {
+        this.dynamicSections[index][prop] = value;
+        this.updateCard();
+    }
+
+    removeDynamicSection(index) {
+        this.dynamicSections.splice(index, 1);
+        this.renderDynamicSectionsManager();
         this.updateCard();
     }
 
@@ -230,15 +294,6 @@ class PremiumCardEditor {
             gallery.appendChild(imgEl);
         });
         
-        // Renderizar Galeria de Recuerdos abajo
-        const memGrid = document.getElementById('memoriesGrid');
-        if(memGrid) {
-            memGrid.innerHTML = this.images.map(img => `
-                <div class="memory-item">
-                    <img src="${img}" style="width:100%; border-radius:20px; border:5px solid white; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
-                </div>
-            `).join('');
-        }
     }
 
     selectImage(index) {
@@ -316,10 +371,18 @@ class PremiumCardEditor {
         }
 
         const bgColor = document.getElementById('bgColor')?.value || '#ff6b9d';
+        const txtColor = document.getElementById('textColor')?.value || '#ffffff';
+        const accColor = document.getElementById('accentColor')?.value || '#ffd93d';
+
+        // Actualizar visualizadores de HEX en el panel
+        if(document.getElementById('hex-bgColor')) document.getElementById('hex-bgColor').innerText = bgColor;
+        if(document.getElementById('hex-textColor')) document.getElementById('hex-textColor').innerText = txtColor;
+        if(document.getElementById('hex-accentColor')) document.getElementById('hex-accentColor').innerText = accColor;
         
         // Lógica de Contraste Automático
         const contrastColor = this.getContrastYIQ(bgColor);
         document.documentElement.style.setProperty('--text-auto', contrastColor);
+        document.documentElement.style.setProperty('--bg-color', bgColor);
         document.documentElement.style.setProperty('--accent-color', bgColor);
 
         // Actualizar Hero Section
@@ -339,6 +402,22 @@ class PremiumCardEditor {
             <section class="memories-section dynamic-block" style="margin-bottom:40px; text-align:center; background: rgba(255,255,255,${opacity * 0.1});">
                 ${s.title ? `<h2 class="section-title">${s.title}</h2>` : ''}
                 ${s.type === 'text' ? `<p class="card-message">${s.content.replace(/\n/g, '<br>')}</p>` : ''}
+                ${s.type === 'gift' ? `
+                    <div class="gift-card">
+                        <p class="card-message">Si deseas hacerme un regalo, puedes realizar una transferencia:</p>
+                        <div class="gift-info" id="gift-val-${s.id}">${s.content}</div>
+                        <button class="copy-btn" onclick="window.editor.copyToClipboard('${s.content}')">📋 Copiar Datos</button>
+                    </div>
+                ` : ''}
+                ${s.type === 'memories' ? `
+                    <div class="memories-grid">
+                        ${this.images.map(img => `
+                            <div class="memory-item" style="break-inside: avoid; margin-bottom: 20px;">
+                                <img src="${img}" style="width:100%; border-radius:15px; border: 8px solid white; box-shadow: 0 15px 35px rgba(0,0,0,0.2);">
+                            </div>
+                        `).join('')}
+                    </div>
+                ` : ''}
                 ${s.type === 'image' && this.selectedImage ? `<img src="${this.selectedImage}" style="width:100%; max-width:600px; border-radius:20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">` : ''}
             </section>
             `).join('');
@@ -363,6 +442,12 @@ class PremiumCardEditor {
 
         this.saveData();
         this.startCountdown();
+    }
+
+    copyToClipboard(text) {
+        navigator.clipboard.writeText(text).then(() => {
+            alert("✅ Datos copiados al portapapeles");
+        });
     }
 
     // Función para calcular si el color es oscuro o claro
@@ -419,10 +504,19 @@ class PremiumCardEditor {
                 body: JSON.stringify(data)
             });
             
-            if (response.ok) alert("✅ ¡Cambios guardados para todos los invitados!");
-            else throw new Error();
+            if (response.ok) {
+                alert("✅ ¡Cambios guardados para todos los invitados!");
+            } else {
+                const errorText = await response.text();
+                throw new Error(`Servidor: ${response.status} - ${errorText}`);
+            }
         } catch (e) {
-            alert("❌ Error al conectar con Hostinger. Revisa la consola.");
+            console.warn('Fallo en guardado remoto:', e);
+            if (this.isNetlify) {
+                alert("ℹ️ Estás en Netlify (Hosting Estático).\n\nLos cambios se han guardado en este navegador, pero no se verán en otros dispositivos. Para guardado global, necesitas un backend (PHP o Firebase).");
+            } else {
+                alert("❌ Error de conexión. No se pudo guardar en el servidor.");
+            }
         } finally {
             btn.innerText = originalText;
         }
@@ -581,17 +675,27 @@ class PremiumCardEditor {
 
     async loadSavedData() {
         try {
-            // Primero intentamos cargar de la base de datos (Hostinger)
             let data = {};
-            // Añadimos un pequeño timestamp para evitar que el navegador guarde una copia vieja (cache)
-            const response = await fetch(this.apiUrl + '?t=' + Date.now());
-            
-            if (response.ok) {
-                const remoteData = await response.json();
-                // Si los datos remotos tienen contenido, los usamos
-                data = (remoteData && remoteData.settings && Object.keys(remoteData.settings).length > 0) ? remoteData : JSON.parse(localStorage.getItem('tarjeta15Premium_v2') || '{}');
-            } else {
-                // Si falla la nube, usamos localStorage como respaldo
+            console.log("Intentando cargar configuración desde:", this.apiUrl);
+
+            // Solo intentar cargar de la API si no estamos en Netlify o si apiUrl es una URL externa
+            if (!this.isNetlify || this.apiUrl.startsWith('http')) {
+                try {
+                    const response = await fetch(this.apiUrl + '?t=' + Date.now());
+                    if (response.ok) {
+                        const remoteData = await response.json();
+                        if (remoteData && remoteData.settings) {
+                            data = remoteData;
+                            console.log("✅ Datos cargados desde Hostinger");
+                        }
+                    }
+                } catch (apiError) {
+                    console.log("Servidor no disponible, usando copia local.");
+                }
+            }
+
+            // Si no hay datos de la API, usar localStorage
+            if (!data.settings) {
                 data = JSON.parse(localStorage.getItem('tarjeta15Premium_v2') || '{}');
             }
 

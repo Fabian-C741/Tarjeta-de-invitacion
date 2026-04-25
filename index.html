@@ -36,9 +36,18 @@
                 <div class="admin-section">
                     <h3>Estética Global</h3>
                     <div class="color-pickers">
-                        <label>Fondo <input type="color" id="bgColor" value="#ff6b9d"></label>
-                        <label>Texto <input type="color" id="textColor" value="#ffffff"></label>
-                        <label>Detalles <input type="color" id="accentColor" value="#ffd93d"></label>
+                        <label>
+                            <span>Color de Fondo</span>
+                            <div class="swatch-container"><span id="hex-bgColor" class="hex-code">#FF6B9D</span><input type="color" id="bgColor" value="#ff6b9d"></div>
+                        </label>
+                        <label>
+                            <span>Color de Texto</span>
+                            <div class="swatch-container"><span id="hex-textColor" class="hex-code">#FFFFFF</span><input type="color" id="textColor" value="#ffffff"></div>
+                        </label>
+                        <label>
+                            <span>Color de Acento</span>
+                            <div class="swatch-container"><span id="hex-accentColor" class="hex-code">#FFD93D</span><input type="color" id="accentColor" value="#ffd93d"></div>
+                        </label>
                     </div>
                     <div style="margin-top:15px;">
                         <label class="label-sm">Paletas Pro</label>
@@ -92,6 +101,8 @@
                     <div class="btn-group">
                         <button onclick="window.editor.addDynamicSection('text')" class="btn-add">+ Bloque Texto</button>
                         <button onclick="window.editor.addDynamicSection('image')" class="btn-add">+ Bloque Imagen</button>
+                        <button onclick="window.editor.addDynamicSection('memories')" class="btn-add">+ Bloque Recuerdos</button>
+                        <button onclick="window.editor.addDynamicSection('gift')" class="btn-add">+ Bloque Regalos</button>
                     </div>
                     <div id="dynamicSectionsManager"></div>
                 </div>
@@ -111,6 +122,10 @@
                 <div class="admin-section">
                     <h3>Música & Stickers</h3>
                     <input type="file" id="musicUpload" accept="audio/*">
+                    <div style="margin-top:10px;">
+                        <label class="label-sm">Volumen de Música</label>
+                        <input type="range" id="musicVolume" min="0" max="1" step="0.1" value="0.5">
+                    </div>
                     <div id="musicList"></div>
                     <hr style="margin: 15px 0; opacity: 0.1;">
                     <label class="label-sm">Añadir Sticker Flotante</label>
@@ -181,14 +196,6 @@
                 <!-- Iframe de mapa -->
             </div>
             <a id="rsvpBtn" href="#" target="_blank" class="rsvp-button">Confirmar Asistencia </a>
-        </div>
-
-        <!-- 📸 Sección de Recuerdos (Landing Page) -->
-        <div id="memoriesSection" class="memories-section">
-            <h2 class="section-title">Nuestros Recuerdos</h2>
-            <div id="memoriesGrid" class="memories-grid">
-                <!-- Aquí se cargan las fotos de la galería automáticamente -->
-            </div>
         </div>
     </div>
 
