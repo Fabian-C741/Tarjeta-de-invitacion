@@ -1,14 +1,17 @@
 * { margin:0; padding:0; box-sizing:border-box; }
 
+:root {
+    --bg-color: #ff6b9d;
+    --accent-color: #ff6b9d;
+    --text-auto: #ffffff;
+}
+
 body {
     font-family: 'Poppins', sans-serif; /* Fuente base */
     min-height: 100vh;
     overflow-x: hidden;
     overflow-y: auto;
     background: var(--bg-color);
-    --bg-color: #ff6b9d;
-    --accent-color: #ff6b9d;
-    --text-auto: #ffffff;
     transition: background 0.5s ease;
 }
 

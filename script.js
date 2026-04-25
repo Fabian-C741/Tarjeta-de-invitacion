@@ -524,7 +524,10 @@ class PremiumCardEditor {
 
     updateBgSlideshowUI() {
         const container = document.getElementById('bgSlideshow');
-        if (this.bgImages.length === 0) return;
+        if (this.bgImages.length === 0) {
+            container.innerHTML = '';
+            return;
+        }
         
         container.innerHTML = this.bgImages.map((img, i) => 
             `<div class="bg-slide ${i === 0 ? 'active' : ''}" style="background-image: url(${img})"></div>`
@@ -637,8 +640,8 @@ class PremiumCardEditor {
     }
 
     saveData() {
-        const data = this.getSerializedData();
-        localStorage.setItem('tarjeta15Premium_v2', JSON.stringify(data));
+        try {a));
+        } catch 
     }
 
     getSerializedData() {
