@@ -272,7 +272,13 @@ class PremiumCardEditor {
     renderBgGallery() {
         const gallery = document.getElementById('bgGallery');
         if (gallery) {
-        gallery.innerHTML = this.bgImages.map(img => `<img src="${img}">`).join('');
+            gallery.innerHTML = this.bgImages.map((img, i) => `
+                <div style="position:relative; width:60px; height:60px;">
+                    <img src="${img}" style="width:100%; height:100%; object-fit:cover; border-radius:8px;">
+                    <button onclick="event.stopPropagation(); window.editor.removeBgImage(${i})" 
+                            style="position:absolute; top:-5px; right:-5px; background:#ff4757; color:white; border:none; border-radius:50%; width:18px; height:18px; cursor:pointer; font-size:10px; display:flex; align-items:center; justify-content:center; border: 2px solid white;">✕</button>
+                </div>
+            `).join('');
         }
     }
 
@@ -284,23 +290,40 @@ class PremiumCardEditor {
             return;
         }
 
-        gallery.innerHTML = '';
-        this.images.slice(0, 8).forEach((img, i) => {
-            const imgEl = document.createElement('img');
-            imgEl.src = img;
-            imgEl.className = this.selectedImage === img ? 'selected' : '';
-            imgEl.title = `Foto ${i + 1}`;
-            imgEl.onclick = () => this.selectImage(i);
-            gallery.appendChild(imgEl);
-        });
-        
+        gallery.innerHTML = this.images.map((img, i) => `
+            <div style="position:relative; width:90px; height:90px;">
+                <img src="${img}" class="${this.selectedImage === img ? 'selected' : ''}" 
+                     onclick="window.editor.selectImage(${i})">
+                <button onclick="event.stopPropagation(); window.editor.removeImage(${i})" 
+                        style="position:absolute; top:-5px; right:-5px; background:#ff4757; color:white; border:none; border-radius:50%; width:22px; height:22px; cursor:pointer; font-size:12px; display:flex; align-items:center; justify-content:center; border: 2px solid white; font-weight:bold;">✕</button>
+            </div>
+        `).join('');
+    }
+
+    removeImage(index) {
+        const removedImg = this.images[index];
+        this.images.splice(index, 1);
+        if (this.selectedImage === removedImg) {
+            this.selectedImage = this.images.length > 0 ? this.images[0] : null;
+        }
+        this.renderImageGallery();
+        this.updateCard();
+        this.saveData();
+    }
+
+    removeBgImage(index) {
+        this.bgImages.splice(index, 1);
+        if (this.currentBgIndex >= this.bgImages.length) {
+            this.currentBgIndex = 0;
+        }
+        this.renderBgGallery();
+        this.updateBgSlideshowUI();
+        this.saveData();
     }
 
     selectImage(index) {
         this.selectedImage = this.images[index];
-        document.querySelectorAll('#imageGallery img').forEach((img, i) => {
-            img.classList.toggle('selected', i === index);
-        });
+        this.renderImageGallery();
         this.updateCard();
     }
 
@@ -462,17 +485,39 @@ class PremiumCardEditor {
 
     startCountdown() {
         if (this.countdownInterval) clearInterval(this.countdownInterval);
-        const targetDate = document.getElementById('countdownDate').value;
-        if (!targetDate) return;
+        
+        const targetDate = document.getElementById('countdownDate')?.value;
+        const section = document.getElementById('countdownSection');
+        const timerContainer = document.getElementById('countdownTimer');
+
+        // Si no hay fecha, ocultamos la sección por completo
+        if (!targetDate || targetDate === "") {
+            if (section) section.style.display = 'none';
+            return;
+        }
+
+        // Si hay fecha, mostramos la sección
+        if (section) section.style.display = 'block';
 
         const update = () => {
             const now = new Date().getTime();
-            const diff = new Date(targetDate).getTime() - now;
+            const target = new Date(targetDate).getTime();
+            const diff = target - now;
 
             if (diff <= 0) {
                 clearInterval(this.countdownInterval);
-                document.getElementById('countdownTimer').innerHTML = "<h3 style='color:white'>¡Llegó el momento! 🥳</h3>";
+                if (timerContainer) timerContainer.innerHTML = "<h3 style='color:white; width:100%;'>¡Llegó el momento! 🥳</h3>";
                 return;
+            }
+
+            // Si el timerContainer tiene el mensaje de "Llegó el momento", restauramos la estructura
+            if (timerContainer && !document.getElementById('days')) {
+                timerContainer.innerHTML = `
+                    <div class="timer-item"><span id="days">00</span><small>Días</small></div>
+                    <div class="timer-item"><span id="hours">00</span><small>Hs</small></div>
+                    <div class="timer-item"><span id="minutes">00</span><small>Min</small></div>
+                    <div class="timer-item"><span id="seconds">00</span><small>Seg</small></div>
+                `;
             }
 
             const d = Math.floor(diff / (1000 * 60 * 60 * 24));
@@ -480,10 +525,10 @@ class PremiumCardEditor {
             const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
             const s = Math.floor((diff % (1000 * 60)) / 1000);
 
-            document.getElementById('days').innerText = String(d).padStart(2, '0');
-            document.getElementById('hours').innerText = String(h).padStart(2, '0');
-            document.getElementById('minutes').innerText = String(m).padStart(2, '0');
-            document.getElementById('seconds').innerText = String(s).padStart(2, '0');
+            if (document.getElementById('days')) document.getElementById('days').innerText = String(d).padStart(2, '0');
+            if (document.getElementById('hours')) document.getElementById('hours').innerText = String(h).padStart(2, '0');
+            if (document.getElementById('minutes')) document.getElementById('minutes').innerText = String(m).padStart(2, '0');
+            if (document.getElementById('seconds')) document.getElementById('seconds').innerText = String(s).padStart(2, '0');
         };
 
         update();
@@ -642,15 +687,21 @@ class PremiumCardEditor {
     saveData() {
         try {
             const data = this.getSerializedData();
-            localStorage.setItem('tarjeta15Premium_v2', JSON.stringify(data));
+            const jsonData = JSON.stringify(data);
+            localStorage.setItem('tarjeta15Premium_v2', jsonData);
+            console.log("💾 Cambios guardados en el navegador");
         } catch (e) {
-            console.warn("Error al guardar en LocalStorage:", e);
+            console.error("Error al guardar:", e);
+            // Si el almacenamiento está lleno (por fotos pesadas), avisamos al usuario
+            if (e.name === 'QuotaExceededError' || e.code === 22) {
+                alert("⚠️ ¡Espacio lleno! No se pueden guardar más cambios porque las fotos son muy pesadas. Prueba borrando algunas fotos o usando imágenes de menor tamaño.");
+            }
         }
     }
 
     getSerializedData() {
         return {
-            images: this.images.slice(0, 12),
+            images: this.images.slice(0, 20), // Aumentamos un poco el límite de fotos
             bgImages: this.bgImages,
             selectedImage: this.selectedImage,
             decorations: this.decorations,
