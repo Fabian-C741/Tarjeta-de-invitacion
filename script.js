@@ -640,8 +640,12 @@ class PremiumCardEditor {
     }
 
     saveData() {
-        try {a));
-        } catch 
+        try {
+            const data = this.getSerializedData();
+            localStorage.setItem('tarjeta15Premium_v2', JSON.stringify(data));
+        } catch (e) {
+            console.warn("Error al guardar en LocalStorage:", e);
+        }
     }
 
     getSerializedData() {
