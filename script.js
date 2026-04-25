@@ -2,7 +2,8 @@ class PremiumCardEditor {
     constructor() {
         // Detectar si estamos en Netlify para ajustar la API
         this.isNetlify = window.location.hostname.includes('netlify.app');
-        // REEMPLAZA ESTA URL con la dirección real de tu archivo api.php en Hostinger
+        
+        // ⚠️ ¡IMPORTANTE!: Verificá que esta URL sea la correcta de tu hosting
         this.apiUrl = 'https://marialuz-15-invitacion.kcrsf.com/api.php'; 
 
         this.images = [];
@@ -748,7 +749,8 @@ class PremiumCardEditor {
                         }
                     }
                 } catch (apiError) {
-                    console.log("Servidor no disponible, usando copia local.");
+                    console.error("❌ Error de conexión al servidor (DNS/URL incorrecta):", this.apiUrl);
+                    console.log("Cargando copia local de respaldo...");
                 }
             }
 
