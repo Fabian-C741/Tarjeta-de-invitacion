@@ -5,18 +5,18 @@ body {
     min-height: 100vh;
     overflow-x: hidden;
     overflow-y: auto;
-    background: #000;
-    --bg-color: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--bg-color);
+    --bg-color: #ff6b9d;
     --accent-color: #ff6b9d;
     --text-auto: #ffffff;
+    transition: background 0.5s ease;
 }
 
 /* 🌌 Slideshow Background */
 .bg-slideshow {
     position: fixed;
     inset: 0;
-    z-index: -2;
-    background: var(--bg-color);
+    z-index: -1;
 }
 
 .bg-slide {

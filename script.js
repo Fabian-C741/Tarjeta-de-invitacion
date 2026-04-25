@@ -383,7 +383,7 @@ class PremiumCardEditor {
         const contrastColor = this.getContrastYIQ(bgColor);
         document.documentElement.style.setProperty('--text-auto', contrastColor);
         document.documentElement.style.setProperty('--bg-color', bgColor);
-        document.documentElement.style.setProperty('--accent-color', bgColor);
+        document.documentElement.style.setProperty('--accent-color', accColor);
 
         // Actualizar Hero Section
         if (document.getElementById('heroTitle')) document.getElementById('heroTitle').innerText = heroTitle || '';
