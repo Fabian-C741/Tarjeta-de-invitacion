@@ -171,6 +171,21 @@ input:focus, select:focus, textarea:focus {
 }
 .rsvp-button:hover { transform: translateY(-5px); box-shadow: 0 15px 40px rgba(37,211,102,0.6); }
 
+/* Estilos Cuenta Regresiva */
+.countdown-timer {
+    display: flex; justify-content: center; gap: 15px; margin-top: 20px;
+}
+.timer-item {
+    background: rgba(255,255,255,0.2); padding: 15px; border-radius: 15px;
+    min-width: 80px; backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.3);
+}
+.timer-item span {
+    display: block; font-size: 2rem; font-weight: 800; color: white;
+}
+.timer-item small {
+    color: rgba(255,255,255,0.8); font-size: 0.8rem; text-transform: uppercase; font-weight: 700;
+}
+
 /* Memory items improvement */
 .memory-item img {
     transition: 0.5s;

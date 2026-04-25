@@ -38,7 +38,7 @@ class PremiumCardEditor {
         
         ['bgColor','textColor','accentColor','customName','customAge','customMessage','customFooter',
          'fontSelect','cardOpacity','shadowIntensity','musicVolume',
-         'eventDate', 'eventAddress', 'eventMap', 'eventWhatsapp'].forEach(id => {
+         'eventDate', 'countdownDate', 'eventAddress', 'eventMap', 'eventWhatsapp'].forEach(id => {
             const el = document.getElementById(id);
             if (el) el.oninput = () => this.updateCard();
         });
@@ -267,6 +267,37 @@ class PremiumCardEditor {
         `;
 
         this.saveData();
+        this.startCountdown();
+    }
+
+    startCountdown() {
+        if (this.countdownInterval) clearInterval(this.countdownInterval);
+        const targetDate = document.getElementById('countdownDate').value;
+        if (!targetDate) return;
+
+        const update = () => {
+            const now = new Date().getTime();
+            const diff = new Date(targetDate).getTime() - now;
+
+            if (diff <= 0) {
+                clearInterval(this.countdownInterval);
+                document.getElementById('countdownTimer').innerHTML = "<h3 style='color:white'>¡Llegó el momento! 🥳</h3>";
+                return;
+            }
+
+            const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((diff % (1000 * 60)) / 1000);
+
+            document.getElementById('days').innerText = String(d).padStart(2, '0');
+            document.getElementById('hours').innerText = String(h).padStart(2, '0');
+            document.getElementById('minutes').innerText = String(m).padStart(2, '0');
+            document.getElementById('seconds').innerText = String(s).padStart(2, '0');
+        };
+
+        update();
+        this.countdownInterval = setInterval(update, 1000);
     }
 
     async generatePermanentConfig() {
@@ -413,6 +444,7 @@ class PremiumCardEditor {
                 shadowIntensity: document.getElementById('shadowIntensity').value,
                 musicVolume: document.getElementById('musicVolume').value,
                 eventDate: document.getElementById('eventDate').value,
+                countdownDate: document.getElementById('countdownDate').value,
                 eventAddress: document.getElementById('eventAddress').value,
                 eventMap: document.getElementById('eventMap').value,
                 eventWhatsapp: document.getElementById('eventWhatsapp').value

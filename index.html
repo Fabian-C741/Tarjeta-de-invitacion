@@ -105,6 +105,7 @@
         <div class="admin-section" data-icon="📅">
             <h3>Detalles del Evento</h3>
             <input type="text" id="eventDate" placeholder="Sábado 15 de Octubre - 21:00hs">
+            <input type="datetime-local" id="countdownDate" title="Fecha para la cuenta regresiva">
             <input type="text" id="eventAddress" placeholder="Calle Falsa 123, Salón de Eventos">
             <input type="text" id="eventMap" placeholder="URL de Google Maps (Iframe/Link)">
             <input type="text" id="eventWhatsapp" placeholder="Número de WhatsApp (ej: 54911...)">
@@ -117,6 +118,17 @@
     <div id="cardContainer" class="card-container">
         <div id="birthdayCard" class="birthday-card">
             <!-- El contenido se genera por JS -->
+        </div>
+
+        <!-- ⏳ Cuenta Regresiva -->
+        <div id="countdownSection" class="memories-section" style="margin-bottom: 40px; text-align: center;">
+            <h2 class="section-title">Faltan Solo...</h2>
+            <div id="countdownTimer" class="countdown-timer">
+                <div class="timer-item"><span id="days">00</span><small>Días</small></div>
+                <div class="timer-item"><span id="hours">00</span><small>Hs</small></div>
+                <div class="timer-item"><span id="minutes">00</span><small>Min</small></div>
+                <div class="timer-item"><span id="seconds">00</span><small>Seg</small></div>
+            </div>
         </div>
 
         <!-- 📍 Detalles del Evento -->
